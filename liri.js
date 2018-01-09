@@ -21,9 +21,9 @@ var spotify = new Spotify({
 );
 var client = new Twitter(keys.twitter);
 
-console.log(client);
+// console.log(client);
 
-console.log(spotify.credentials);
+// console.log(spotify.credentials);
 
 //Logs Twitter and spotify keys - remove once app complete
 // console.log(spotify);
@@ -77,7 +77,13 @@ function tweetDisplay(username) {
     var params = {screen_name: username};
     client.get("statuses/user_timeline", params, function(error, tweets, response) {
         if (!error) {
-            console.log(`Tweets by: ${tweets[0].user.name}\n + Created: ${tweets[0].created_at}\n + Tweet: ${tweets[0].text}`);
+            
+            for (var i=0; i < tweets.length; i++){
+                console.log(`Tweet# ${i}: ${tweets[i].text}\n`+`Created: ${tweets[i].created_at}\n`);
+                console.log("---------------------------------------------------")
+            }
+            
+           
         }
     })
     //Pulls the last 20 tweets from CoderLi account and when they were created in terminal bash window
