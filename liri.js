@@ -6,20 +6,24 @@ require("dotenv").config();
 //Makes request package required; Used to access OMDB api
 var request = require("request");
 
+var Spotify = require("node-spotify-api");
+
+var Twitter = require("twitter")
+
 //Makes the keys.js file requred, which references the keys store in .env file
 var keys = require("./keys.js");
 
-//Constructor functions and object instances
-function Spotify(object) {
-    return object;
-};
-
-function Twitter(object) {
-    return object;
+var spotify = new Spotify({
+    id: "a3227b6e28254b01844b22d69511021d",
+    secret: "1696a29d483744aebdaf0e4ca646f053"
 }
-
-var spotify = new Spotify(keys.spotify);
+    // keys.spotify
+);
 var client = new Twitter(keys.twitter);
+
+console.log(client);
+
+console.log(spotify.credentials);
 
 //Logs Twitter and spotify keys - remove once app complete
 // console.log(spotify);
@@ -32,7 +36,7 @@ var title = process.argv[3];
 //Switch case to call 1 of 4 functions depending on user text or display message if valid action is not chosen
 switch (action) {
     case "my-tweets":
-        tweetDisplay();
+        tweetDisplay("CoderLi3");
         break;
 
     case "spotify-this-song":
@@ -68,14 +72,42 @@ switch (action) {
 }
 
 //Called when user enters "my-tweets"
-function tweetDisplay() {
+function tweetDisplay(username) {
     console.log("Check my tweets!");
+    var params = {screen_name: username};
+    client.get("statuses/user_timeline", params, function(error, tweets, response) {
+        if (!error) {
+            console.log(`Tweets by: ${tweets[0].user.name}\n + Created: ${tweets[0].created_at}\n + Tweet: ${tweets[0].text}`);
+        }
+    })
     //Pulls the last 20 tweets from CoderLi account and when they were created in terminal bash window
 };
 
 //Called when user enters "spotify-this-song"
 function spotifyDisplay(songTitle) {
+    // var authOptions = {
+    //     url: "https://accounts.spotify.com/api/token",
+    //     headers: {
+    //         "Authorization": "Basic " + (new Buffer(spotify.Spotify.credentials.id))
+    //     }
+    // }
+
+
+
+
+
     console.log(`Listen to This: ${songTitle}!`);
+   
+    spotify.search({type: "track", query: songTitle, limit: 5}, function (err, data) {
+        if (err) {
+            return console.log("Error occured: " + err);
+        }
+        console.log(data);
+    })
+ };
+    
+    
+    
     // show the following information about the song selected:
     // Artist(s)
 
@@ -86,7 +118,7 @@ function spotifyDisplay(songTitle) {
     // The album that the song is from
 
     // If no song is provided then your program will default to "The Sign" by Ace of Base.
-};
+
 
 //Called when user enters "movie-this"
 function movieDisplay(movieTitle) {
