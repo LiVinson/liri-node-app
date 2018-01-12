@@ -27,14 +27,16 @@ var title = process.argv[3];
 //Switch case to call 1 of 4 functions depending on user text or display message if valid action is not chosen
 switch (action) {
     case "do-what-it-says":
+        randomDisplay();
 
-        var randomArr = randomDisplay();
-        console.log(randomArr);
-        action = randomArr[0];
-        title = randomArr[1];
-        console.log(action);
-        console.log(title)
+        // randomAct = randomArr[0];
+        // if (randomAct === "spotify-this-song"){
+        //     spotifyDisplay(randomArr[1]);
+        // } else {
+        //     tweetDisplay("CoderLi3");
+        // }        
 
+        break;
     case "my-tweets":
         tweetDisplay("CoderLi3");
         break;
@@ -171,13 +173,18 @@ function randomDisplay() {
         // console.log(data);
 
         // Then split it by commas (to make it more readable)
+        console.log(data)
         var dataArr = data.split(",");
 
         // We will then re-display the content as an array for later use.
         // console.log(dataArr);
         console.log(dataArr);
-        return dataArr;
 
+        if (dataArr[0] === "spotify-this-song") {
+            spotifyDisplay(dataArr[1])
+        } else {
+            tweetDisplay();
+        }
     });
 
     //
