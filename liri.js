@@ -97,6 +97,8 @@ function tweetDisplay(username) {
 //Called when user selects "sSpotify a song" in command line
 function spotifyDisplay(songTitle) {
     console.log(`Listen to This: ${songTitle}!`);
+    console.log("-------------------------------------------------------------")
+
 
     spotify.search({
             type: "track",
@@ -147,9 +149,9 @@ function spotifyDisplay(songTitle) {
 
 //Called when user selects "Search for a movie" in command line
 function movieDisplay(movieTitle) {
-    console.log("Movie Display Function");
+    // console.log("Movie Display Function");
     var queryURL = `http://www.omdbapi.com/?t=${movieTitle}&y=&plot=short&apikey=trilogy`
-    console.log(queryURL);
+    // console.log(queryURL);
 
     request(queryURL, function (error, response, body) {
         if (!error && response.statusCode === 200) {
@@ -172,7 +174,7 @@ function movieDisplay(movieTitle) {
 
 //Called when user selects ""Surprise Me!" in command line
 function randomDisplay() {
-    console.log("Do something!");
+    // console.log("Do something!");
     fs.readFile("random.txt", "utf8", function (error, data) {
 
         // If the code experiences any errors it will log the error to the console.
@@ -184,12 +186,12 @@ function randomDisplay() {
         // console.log(data);
 
         // Then split it by commas (to make it more readable)
-        console.log(data)
+        // console.log(data)
         var dataArr = data.split(",");
 
         // We will then re-display the content as an array for later use.
         // console.log(dataArr);
-        console.log(dataArr);
+        // console.log(dataArr);
 
         if (dataArr[0] === "spotify-this-song") {
             spotifyDisplay(dataArr[1])
