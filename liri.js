@@ -200,6 +200,11 @@ function randomDisplay() {
 
 };
 
+//function logText(log.txt, command requested, command outout ){
+
+
+//}
+
 //==============CODE TO RUN======
 
 //Runs inquirer menu, and calls userResponse function once answers received, passing answers as parameter
