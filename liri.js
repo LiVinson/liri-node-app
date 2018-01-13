@@ -1,12 +1,13 @@
-//INITIAL SET UP
+//LOAD NPM Packages
 
-//This utilizes dotenv package, which allows for global variables to be set in .env files, but not be sent to github for security using .gitignore file
+var inquirer = require("inquirer");
+//dotenv Package: Allows global variables (i.e. API keys) to be set in .env files, but not be sent to github using .gitignore file
 require("dotenv").config();
 
-//Makes request package required; Used to access OMDB api
+//Request package: Used to access OMDB api
 var request = require("request");
 
-//Makes spotify and twitter packages required
+//Spotify and twitter packages
 var Spotify = require("node-spotify-api");
 var Twitter = require("twitter");
 
@@ -24,50 +25,7 @@ var client = new Twitter(keys.twitter);
 var action = process.argv[2];
 var title = process.argv[3];
 
-//Switch case to call 1 of 4 functions depending on user text or display message if valid action is not chosen
-switch (action) {
-    case "do-what-it-says":
-        randomDisplay();
-
-        // randomAct = randomArr[0];
-        // if (randomAct === "spotify-this-song"){
-        //     spotifyDisplay(randomArr[1]);
-        // } else {
-        //     tweetDisplay("CoderLi3");
-        // }        
-
-        break;
-    case "my-tweets":
-        tweetDisplay("CoderLi3");
-        break;
-
-    case "spotify-this-song":
-        //If song title is not provided (will be undefined, which is false)
-        if (!(title)) {
-            title = "The Sign" //by Ace of Base; determine how to format after reviewing spotify API
-        };
-
-        spotifyDisplay(title);
-        break;
-
-    case "movie-this":
-        //If movie title is not provided (will be undefined, which is false)
-        if (!(title)) {
-            title = "Mr+Nobody"
-        } else {
-
-            for (var i = 4; i < process.argv.length; i++) {
-                title += `+${process.argv[i]}`
-            }
-        };
-        movieDisplay(title);
-        break;
-
-    default:
-        console.log("Please make a valid choice!")
-}
-
-//Called when user enters "my-tweets"
+//Called when user enters "my-tweets" in command line
 function tweetDisplay(username) {
     console.log("Check my tweets!");
     var params = {
@@ -83,7 +41,7 @@ function tweetDisplay(username) {
     })
 };
 
-//Called when user enters "spotify-this-song"
+//Called when user enters "spotify-this-song" in command line (along with a title)
 function spotifyDisplay(songTitle) {
     console.log(`Listen to This: ${songTitle}!`);
 
@@ -123,7 +81,7 @@ function spotifyDisplay(songTitle) {
                     previewLink = "Spotify preview link is unavailable"
 
                 };
-                console.log(`Track: ${itemArr[eachTrack].name}\n` + `Artist(s):${artistList}\n` + `Album:  ${itemArr[eachTrack].album.name}\n` + `Take a Listen: ${previewLink}`);
+                console.log(`\nTrack: ${itemArr[eachTrack].name}\n` + `Artist(s):${artistList}\n` + `Album:  ${itemArr[eachTrack].album.name}\n` + `Take a Listen: ${previewLink}`);
                 console.log("-------------------------------------------------------------")
 
             }
@@ -134,7 +92,7 @@ function spotifyDisplay(songTitle) {
 };
 
 
-//Called when user enters "movie-this"
+//Called when user enters "movie-this" in command line (along with movie title)
 function movieDisplay(movieTitle) {
     console.log("Movie Display Function");
     var queryURL = `http://www.omdbapi.com/?t=${movieTitle}&y=&plot=short&apikey=trilogy`
@@ -187,19 +145,51 @@ function randomDisplay() {
         }
     });
 
-    //
+};
 
-    //Use fs Node package to take text inside of random/txt and use it to call one of Liti's command:
-    //Run spotify-this-song for I want it this way (Can be changed)
 
-}
+//Switch case to call 1 of 4 functions depending on user input
+switch (action) {
+    case "do-what-it-says":
+        randomDisplay();
+        break;
+
+    case "my-tweets":
+        tweetDisplay("CoderLi3");
+        break;
+
+    case "spotify-this-song":
+        //If song title is not provided (will be undefined, which is false)
+        if (!(title)) {
+            title = "The Sign"
+        };
+
+        spotifyDisplay(title);
+        break;
+
+    case "movie-this":
+        //If movie title is not provided (will be undefined, which is false)
+        if (!(title)) {
+            title = "Mr+Nobody"
+        } else {
+
+            for (var i = 4; i < process.argv.length; i++) {
+                title += `+${process.argv[i]}`
+            }
+        };
+        movieDisplay(title);
+        break;
+
+    default:
+        console.log("Please make a valid choice!")
+};
 
 //Remaining Steps:
 
-//Get spotify function to pull correct song when no title provided
-//Get random function to work
+//Get menu to work
 //Add more tweets for twitter function
 //Link to it from portfolio
+//Update twitter timestamp
 
 //ADDITIONAL TASKS: 
 
