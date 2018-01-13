@@ -148,41 +148,67 @@ function randomDisplay() {
 };
 
 
-//Switch case to call 1 of 4 functions depending on user input
-switch (action) {
-    case "do-what-it-says":
-        randomDisplay();
-        break;
+//Inquirer Menu
 
-    case "my-tweets":
-        tweetDisplay("CoderLi3");
-        break;
+//Save all menu questions into array, and pass to prompt method
+var questions = [{
+        type: "list",
+        message: "Would you like to check out my tweets, look up a movie from OMDB, or search for a song using Spotify?",
+        choices: ["Display tweets", "Spotify a song", "Search for a movie", "Surprise Me!"],
+        name: "action"
+    },
+    {
+        type: "input",
+        message: "Enter a song title to spotify:",
+        name: "userSong",
+        when: function (answers) {
+            return answers.action === "Spotify a song"
+        },
+        default: "The Sign"
+    },
+    {
+        type: "input",
+        message: "Enter a movie tile to get more info:",
+        name: "userMovie",
+        when: function (answers) {
+            return answers.action === "Search for a movie"
+        },
+        default: "Mr+Nobody"
+    }
+];
 
-    case "spotify-this-song":
-        //If song title is not provided (will be undefined, which is false)
-        if (!(title)) {
-            title = "The Sign"
-        };
+inquirer.prompt(questions).then(function (answers) {
+    console.log("Answers:");
 
-        spotifyDisplay(title);
-        break;
+    // Switch case to call 1 of 4 functions depending on user input
+    switch (answers.action) {
+        case "Surprise Me!":
+            randomDisplay();
+            break;
 
-    case "movie-this":
-        //If movie title is not provided (will be undefined, which is false)
-        if (!(title)) {
-            title = "Mr+Nobody"
-        } else {
+        case "Display tweets":
+            tweetDisplay("CoderLi3"); //Add limit?
+            break;
 
-            for (var i = 4; i < process.argv.length; i++) {
-                title += `+${process.argv[i]}`
-            }
-        };
-        movieDisplay(title);
-        break;
+        case "Spotify a song":
+            spotifyDisplay(answers.userSong); //Add limit?
+            break;
 
-    default:
-        console.log("Please make a valid choice!")
-};
+        case "Search for a movie":
+            movieDisplay(answers.userMovie);
+            break;
+
+        default: //Not sure if I need this...
+            console.log("Please make a valid choice!")
+    };
+
+});
+
+
+
+
+
+
 
 //Remaining Steps:
 
