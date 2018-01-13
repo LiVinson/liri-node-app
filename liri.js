@@ -200,6 +200,11 @@ function randomDisplay() {
 
 };
 
+//function logText(log.txt, command requested, command outout ){
+
+
+//}
+
 //==============CODE TO RUN======
 
 //Runs inquirer menu, and calls userResponse function once answers received, passing answers as parameter
@@ -207,13 +212,7 @@ inquirer.prompt(questions).then(userResponse);
 
 //Remaining Steps:
 
-//Create a README.ME file
 //Add more tweets for twitter function
 //Update twitter timestamp
-//Bonus
+//Bonus - log command and output to log.txt file
 
-
-
-//BONUS:
-//  * In addition to logging the data to your terminal/bash window, output the data to a .txt file called `log.txt`.
-// * Make sure you append each command you run to the `log.txt` file.
