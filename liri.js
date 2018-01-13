@@ -1,6 +1,8 @@
-//LOAD NPM Packages
+//==============LOAD NPM PACKAGES/BUILT IN METHODS==============
 
+//Inquirer package: Adds option for "menu" in command line
 var inquirer = require("inquirer");
+
 //dotenv Package: Allows global variables (i.e. API keys) to be set in .env files, but not be sent to github using .gitignore file
 require("dotenv").config();
 
@@ -14,18 +16,69 @@ var Twitter = require("twitter");
 //Built-in node method, used to read and write to other files
 var fs = require("fs");
 
-//Makes the keys.js file requred, which references the api keys stored in .env file
+//keys.js: References the api keys stored in .env file
 var keys = require("./keys.js");
 
-//Constructor function creates "copy" of object containing keys for each API
+//==============GLOBAL VARIABLES AND FUNCTIONS==============
+
+//Constructor function called: creates "copy" of object containing keys for each API
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
-//Saves value of user inputs
-var action = process.argv[2];
-var title = process.argv[3];
+//Inquirer menu questions, passed to prompt method
+var questions = [{
+        type: "list",
+        message: "Would you like to check out my tweets, look up a movie from OMDB, or search for a song using Spotify?",
+        choices: ["Display tweets", "Spotify a song", "Search for a movie", "Surprise Me!"],
+        name: "action"
+    },
+    {
+        type: "input",
+        message: "Enter a song title to spotify:",
+        name: "userSong",
+        when: function (answers) {
+            return answers.action === "Spotify a song"
+        },
+        default: "The Sign"
+    },
+    {
+        type: "input",
+        message: "Enter a movie tile to get more info:",
+        name: "userMovie",
+        when: function (answers) {
+            return answers.action === "Search for a movie"
+        },
+        default: "Mr+Nobody"
+    }
+];
 
-//Called when user enters "my-tweets" in command line
+
+//Inquirer menu response function (called after user responses received)
+function userResponse(answers) {
+    switch (answers.action) {
+        case "Surprise Me!":
+            randomDisplay();
+            break;
+
+        case "Display tweets":
+            tweetDisplay("CoderLi3"); //Add limit?
+            break;
+
+        case "Spotify a song":
+            spotifyDisplay(answers.userSong); //Add limit?
+            break;
+
+        case "Search for a movie":
+            movieDisplay(answers.userMovie);
+            break;
+
+        default: //Not sure if I need this...
+            console.log("Please make a valid choice!")
+    };
+
+};
+
+//Called when user selects "Display tweets" in command line
 function tweetDisplay(username) {
     console.log("Check my tweets!");
     var params = {
@@ -41,14 +94,14 @@ function tweetDisplay(username) {
     })
 };
 
-//Called when user enters "spotify-this-song" in command line (along with a title)
+//Called when user selects "sSpotify a song" in command line
 function spotifyDisplay(songTitle) {
     console.log(`Listen to This: ${songTitle}!`);
 
     spotify.search({
             type: "track",
             query: songTitle,
-            limit: 2
+            limit: 5
         }, function (err, data) {
             if (err) {
                 console.log("Error occured: " + err);
@@ -77,7 +130,7 @@ function spotifyDisplay(songTitle) {
 
                 var previewLink = JSON.stringify(itemArr[eachTrack].preview_url);
 
-                if (previewLink == "null") {
+                if (previewLink == "null") {//If preview is unavailable, provide a message
                     previewLink = "Spotify preview link is unavailable"
 
                 };
@@ -92,7 +145,7 @@ function spotifyDisplay(songTitle) {
 };
 
 
-//Called when user enters "movie-this" in command line (along with movie title)
+//Called when user selects "Search for a movie" in command line
 function movieDisplay(movieTitle) {
     console.log("Movie Display Function");
     var queryURL = `http://www.omdbapi.com/?t=${movieTitle}&y=&plot=short&apikey=trilogy`
@@ -117,7 +170,7 @@ function movieDisplay(movieTitle) {
     })
 };
 
-//Called when user enters "do-what-it-says"
+//Called when user selects ""Surprise Me!" in command line
 function randomDisplay() {
     console.log("Do something!");
     fs.readFile("random.txt", "utf8", function (error, data) {
@@ -147,79 +200,19 @@ function randomDisplay() {
 
 };
 
+//==============CODE TO RUN======
 
-//Inquirer Menu
-
-//Save all menu questions into array, and pass to prompt method
-var questions = [{
-        type: "list",
-        message: "Would you like to check out my tweets, look up a movie from OMDB, or search for a song using Spotify?",
-        choices: ["Display tweets", "Spotify a song", "Search for a movie", "Surprise Me!"],
-        name: "action"
-    },
-    {
-        type: "input",
-        message: "Enter a song title to spotify:",
-        name: "userSong",
-        when: function (answers) {
-            return answers.action === "Spotify a song"
-        },
-        default: "The Sign"
-    },
-    {
-        type: "input",
-        message: "Enter a movie tile to get more info:",
-        name: "userMovie",
-        when: function (answers) {
-            return answers.action === "Search for a movie"
-        },
-        default: "Mr+Nobody"
-    }
-];
-
-inquirer.prompt(questions).then(function (answers) {
-    console.log("Answers:");
-
-    // Switch case to call 1 of 4 functions depending on user input
-    switch (answers.action) {
-        case "Surprise Me!":
-            randomDisplay();
-            break;
-
-        case "Display tweets":
-            tweetDisplay("CoderLi3"); //Add limit?
-            break;
-
-        case "Spotify a song":
-            spotifyDisplay(answers.userSong); //Add limit?
-            break;
-
-        case "Search for a movie":
-            movieDisplay(answers.userMovie);
-            break;
-
-        default: //Not sure if I need this...
-            console.log("Please make a valid choice!")
-    };
-
-});
-
-
-
-
-
-
+//Runs inquirer menu, and calls userResponse function once answers received, passing answers as parameter
+inquirer.prompt(questions).then(userResponse);
 
 //Remaining Steps:
 
-//Get menu to work
+//Create a README.ME file
 //Add more tweets for twitter function
-//Link to it from portfolio
 //Update twitter timestamp
+//Bonus
 
-//ADDITIONAL TASKS: 
 
-//Create a README.MD file
 
 //BONUS:
 //  * In addition to logging the data to your terminal/bash window, output the data to a .txt file called `log.txt`.
